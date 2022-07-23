@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:todo_list_algoriza/modules/schedule_screen.dart';
+import 'package:todo_list_algoriza/modules/screens/all_tasks.dart';
+import 'package:todo_list_algoriza/modules/screens/completed_tasks.dart';
+import 'package:todo_list_algoriza/modules/screens/favourite_tasks.dart';
+import 'package:todo_list_algoriza/modules/screens/active_tasks.dart';
 import 'package:todo_list_algoriza/modules/task_screen.dart';
 import 'package:todo_list_algoriza/shared/componands/componands.dart';
 import 'package:todo_list_algoriza/shared/cubit/app_cubit.dart';
@@ -18,6 +20,7 @@ class BoardScreen extends StatelessWidget {
         AppCubit cubit = BlocProvider.of<AppCubit>(context);
         return DefaultTabController(
           length: 4,
+          initialIndex: 0,
           child: Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
@@ -37,12 +40,13 @@ class BoardScreen extends StatelessWidget {
                     color: Colors.black,
                   ),
                   onPressed: () {
-                    NavigateTo(context, const ScheduleScreen());
+                    // NavigateTo(context, const ScheduleScreen());
+                    cubit.getDataFromDataBase(cubit.database);
+
                   },
                 ),
               ],
-              bottom:
-              TabBar(
+              bottom: TabBar(
                 tabs: cubit.tabs,
                 labelColor: Colors.black,
                 unselectedLabelColor: Colors.grey,
@@ -50,7 +54,6 @@ class BoardScreen extends StatelessWidget {
                 indicatorWeight: 3.0,
                 physics: const NeverScrollableScrollPhysics(),
                 labelPadding: const EdgeInsets.symmetric(horizontal: 5.0),
-
               ),
             ),
             body: Padding(
@@ -60,15 +63,11 @@ class BoardScreen extends StatelessWidget {
                   Expanded(
                     child: TabBarView(
                       controller: cubit.tabController,
-
-                      children: [
-                        // TaskScreen(),
-                        // TaskScreen(),
-                        // TaskScreen(),
-                        // TaskScreen(),
-                        // TaskScreen(),
-                        // TaskScreen(),
-                        // TaskScreen(),
+                      children: const [
+                        AllTasksScreen(),
+                        CompletedTasksScreen(),
+                        UnCompletedTasksScreen(),
+                        FavouriteTaskScreen(),
                       ],
                     ),
                   ),
@@ -101,7 +100,9 @@ class BoardScreen extends StatelessWidget {
                   //   ],
                   // ),
                   // const Spacer(),
-
+                  const SizedBox(
+                    height: 20.0,
+                  ),
                   mainButton(
                     context: context,
                     onClick: () {
@@ -109,6 +110,7 @@ class BoardScreen extends StatelessWidget {
                         context,
                         const TaskScreen(),
                       );
+
                     },
                     text: 'Add a task',
                   ),

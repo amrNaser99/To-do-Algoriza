@@ -7,16 +7,29 @@ import 'package:todo_list_algoriza/shared/cubit/app_states.dart';
 
 import '../shared/cubit/app_cubit.dart';
 
-class TaskScreen extends StatelessWidget {
+class TaskScreen extends StatefulWidget {
   const TaskScreen({Key? key}) : super(key: key);
 
   @override
+  State<TaskScreen> createState() => _TaskScreenState();
+}
+
+class _TaskScreenState extends State<TaskScreen> {
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit, AppStates>(
-      listener: (BuildContext context, state) {},
+      listener: (BuildContext context, state) {
+        if (state is AppInsertDatabaseSuccessfulState) {
+          BlocProvider.of<AppCubit>(context).titleController.clear();
+          BlocProvider.of<AppCubit>(context).startTimeController.clear();
+          BlocProvider.of<AppCubit>(context).endTimeController.clear();
+          BlocProvider.of<AppCubit>(context).deadLineController.clear();
+          BlocProvider.of<AppCubit>(context).remindController.clear();
+          NavigateAndFinish(context, const BoardScreen());
+        }
+      },
       builder: (BuildContext context, Object? state) {
         AppCubit cubit = BlocProvider.of<AppCubit>(context);
-        Key key1 = Key('Container1');
         return Scaffold(
           appBar: AppBar(
             titleSpacing: 0,
@@ -212,7 +225,7 @@ class TaskScreen extends StatelessWidget {
                               ).then((value) {
                                 if (value != null) {
                                   cubit.endTimeController.text =
-                                      '${value.hour}:${value.minute} ${value.hour > 12 ? 'PM' : 'AM'}';
+                                      '${value.hour > 12 ? value.hour - 12 : value.hour}:${value.minute} ${value.hour > 12 ? 'PM' : 'AM'}';
                                   debugPrint(cubit.endTimeController.text);
                                 }
                               });
@@ -239,6 +252,44 @@ class TaskScreen extends StatelessWidget {
                 const SizedBox(
                   height: 10.0,
                 ),
+                // DropdownButton<String>(
+                //   items:  <String>['10 min before','30 min before', '1 hour before', '1 day before'].map((String value) {
+                //     return DropdownMenuItem<String>(
+                //       value: value,
+                //       child: Text(value),
+                //     );
+                //   }).toList(),
+                //   // const [
+                //   //   DropdownMenuItem<String>(
+                //   //       value: '10 min before', child: Text('10 min before')),
+                //   //   DropdownMenuItem<String>(
+                //   //     value: '30 min before',
+                //   //     child: Text('30 min before'),
+                //   //   ),
+                //   //   DropdownMenuItem<String>(
+                //   //     value: '1 hour before',
+                //   //     child: Text('1 hour before'),
+                //   //   ),
+                //   //   DropdownMenuItem<String>(
+                //   //     value: '1 day before',
+                //   //     child: Text('1 day before'),
+                //   //   ),
+                //   // ],
+                //   onChanged: (value) {
+                //     // value == '10 min before'
+                //     //     ? cubit.remindController.text = '10'
+                //     //     : value == '30 min before'
+                //     //         ? cubit.remindController.text = '30'
+                //     //         : value == '1 hour before'
+                //     //             ? cubit.remindController.text = '60'
+                //     //             : cubit.remindController.text = '1440';
+                //     // // cubit.remindController.text = value;
+                //     setState(() {
+                //       cubit.remindController.text = value!;
+                //     });
+                //   },
+                //   value: cubit.remindController.text,
+                // ),
                 TFF(
                   padding:
                       const EdgeInsetsDirectional.only(start: 20.0, end: 10.0),
@@ -255,6 +306,7 @@ class TaskScreen extends StatelessWidget {
                 const SizedBox(
                   height: 20.0,
                 ),
+
                 ///TODO: Add a color picker
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.start,
@@ -320,8 +372,38 @@ class TaskScreen extends StatelessWidget {
                   context: context,
                   text: 'Create A Task',
                   onClick: () {
-                    cubit.createTask();
-                    NavigateTo(context, const BoardScreen());
+                    //   title: cubit.titleController.text,
+                    // cubit.insert(
+                    //   title: cubit.titleController.text,
+                    //   startTime: cubit.startTimeController.text,
+                    //   endTime: cubit.endTimeController.text,
+                    //   deadline: cubit.deadLineController.text,
+                    //   remind: cubit.remindController.text,
+                    //   color: 'Colors.red',
+                    //   status: 'completed',
+                    // );
+                    cubit.insertToDatabase(
+                      context: context,
+                      title: cubit.titleController.text,
+                      startTime: cubit.startTimeController.text,
+                      endTime: cubit.endTimeController.text,
+                      deadline: cubit.deadLineController.text,
+                      remind: cubit.remindController.text,
+                      color: 'Colors.red',
+                      status: 'completed',
+                      isFav: false,
+                    );
+
+                    debugPrint(
+                      "${cubit.titleController.text}, ${cubit.startTimeController.text}, ${cubit.endTimeController.text}, ${cubit.deadLineController.text}, ${cubit.remindController.text}",
+                    );
+
+                    // cubit.insertToDatabase(
+                    //   context: context,
+                    //   title: cubit.titleController.text,
+                    //   time: cubit.startTimeController.text,
+                    //   date: cubit.deadLineController.text,
+                    // );
                   },
                 ),
               ],

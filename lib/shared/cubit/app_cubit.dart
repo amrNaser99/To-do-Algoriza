@@ -13,7 +13,7 @@ class AppCubit extends Cubit<AppStates> {
     Colors.blue,
   ];
 
-  late TabController tabController;
+  TabController? tabController;
 
   static AppCubit get(context) => BlocProvider.of(context);
 
@@ -39,44 +39,58 @@ class AppCubit extends Cubit<AppStates> {
   TextEditingController endTimeController = TextEditingController();
   TextEditingController repeatController = TextEditingController();
 
-  List tasks = [];
-  late Database database;
+  Database? database;
 
-  void createTask() {
+  List<Map> tasks = [];
+  List<Map> activeTasks = [];
+  List<Map> completedTasks = [];
+  List<Map> favouriteTasks = [];
+
+  void createDatabase() {
     openDatabase(
       'todo.db',
       version: 1,
       onCreate: (database, version) {
-        debugPrint('Database Created');
+        print('database created');
         database
             .execute(
-                'CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, date TEXT, start time TEXT, deadline TEXT, status TEXT)')
+                'CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, start_time TEXT, end_time TEXT, deadline TEXT, remind TEXT, color TEXT, status TEXT, is_fav TEXT)')
             .then((value) {
-          debugPrint('DataBase Execute Successfully');
+          print('Table created');
+        }).catchError((error) {
+          print('Error is ${error.toString()}');
         });
       },
+      onOpen: (database) {
+        print('database opened');
+        getDataFromDataBase(database);
+        print('data received From Database successfully');
+      },
     ).then((value) {
-      debugPrint('DataBase open Successfully');
-    }).catchError((error) {
-      debugPrint('Error is $error');
+      database = value;
+      emit(AppCreateDatabaseSuccess());
     });
-    emit(AppCreateDatabaseState());
   }
 
   insertToDatabase({
     required BuildContext context,
     required String title,
-    required String time,
-    required String date,
+    required String startTime,
+    required String endTime,
+    required String deadline,
+    required String remind,
+    required String color,
+    required String status,
+    required bool isFav,
   }) async {
-    await database.transaction((txn) async {
+    await database?.transaction((txn) async {
       txn
           .rawInsert(
-              'INSERT INTO tasks(title, date,start time, status) VALUES("$title","$date","$time","new")')
+              'INSERT INTO tasks(title, start_time, end_time, deadline, remind, color, status, is_fav) VALUES("$title","$startTime","$endTime","$deadline","$remind","color.red","active","false")')
           .then((value) {
         print('$value is inserting successfully');
-        emit(AppInsertDatabaseState());
-        Navigator.pop(context);
+        emit(AppInsertDatabaseSuccessfulState());
+        // Navigator.pop(context);
         getDataFromDataBase(database);
       }).catchError((error) {
         print('Error when Insert new raw Record ${error.toString()}');
@@ -84,58 +98,47 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
-  List newTasks = [];
-  List doneTasks = [];
-  List archivedTasks = [];
-
   void getDataFromDataBase(database) {
-    newTasks = [];
-    doneTasks = [];
-    archivedTasks = [];
+    tasks = [];
+    activeTasks = [];
+    completedTasks = [];
+    favouriteTasks = [];
 
     emit(AppGetDatabaseLoadingState());
 
-    database.rawQuery("SELECT * FROM tasks").then((value) {
+    database.rawQuery("SELECT * FROM Tasks").then((value) {
+      tasks = value;
+      print('tasks $tasks');
       value.forEach((element) {
-        if (element['status'] == 'new') {
-          newTasks.add(element);
-        } else if (element['status'] == 'done') {
-          doneTasks.add(element);
-        } else if (element['status'] == 'favourite') {
-          archivedTasks.add(element);
+
+        if (element['status'] == 'completed') {
+          completedTasks.add(element);
+        } else if (element['status'] == 'active') {
+          activeTasks.add(element);
+        } else if (element['status'] == 'true') {
+          favouriteTasks.add(element);
         }
       });
       emit(AppGetDatabaseSuccessfulState());
     });
   }
 
-  // Update some record
-  void updateData({
-    required String status,
-    required int id,
-  }) {
-    database.rawUpdate(
-        'UPDATE tasks SET status = ? WHERE id = ?', [status, id]).then((value) {
-      getDataFromDataBase(database);
-      emit(AppUpdateDatabaseState());
-    }).catchError((error) {
-      debugPrint('Error in UpdateData fun : $error');
-    });
-  }
-
-  void deleteData({
-    required int id,
-  }) {
-    database.rawDelete('DELETE FROM tasks WHERE id = ?', [id]).then((value) {
-      getDataFromDataBase(database);
-      emit(AppDeleteDatabaseState());
-    }).catchError((error) {
-      debugPrint('Error in DeleteData fun : $error');
-    });
-  }
-
   void setChecked({required bool value}) {
     value = !value;
     emit(AppSetCheckedSuccess(value));
+  }
+
+  void updateTaskStatus(model, String s) {
+    emit(AppUpdateTaskStatusLoadingState());
+    database
+        ?.rawUpdate('UPDATE tasks SET status = "$s" WHERE id = "${model.id}"')
+        .then((value) {
+      print('${model.title} is updated successfully');
+      emit(AppUpdateTaskStatusSuccessfulState());
+      getDataFromDataBase(database);
+    }).catchError((error) {
+      print('Error when update ${model.title} ${error.toString()}');
+      emit(AppUpdateTaskStatusErrorState(error));
+    });
   }
 }
