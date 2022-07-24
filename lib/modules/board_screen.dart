@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_list_algoriza/modules/schedule_screen.dart';
 import 'package:todo_list_algoriza/modules/screens/active_tasks.dart';
 import 'package:todo_list_algoriza/modules/screens/all_tasks.dart';
 import 'package:todo_list_algoriza/modules/screens/completed_tasks.dart';
@@ -40,8 +41,7 @@ class BoardScreen extends StatelessWidget {
                     color: Colors.black,
                   ),
                   onPressed: () {
-                    // NavigateTo(context, const ScheduleScreen());
-                    cubit.getDataFromDataBase(cubit.database);
+                    NavigateTo(context, const ScheduleScreen());
 
                   },
                 ),

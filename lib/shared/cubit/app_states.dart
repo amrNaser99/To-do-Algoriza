@@ -93,3 +93,5 @@ class AppDeleteTaskErrorState extends AppStates {
 }
 
 class AppChangeColorStates extends AppStates {}
+
+class AppChangeDateStates extends AppStates {}
