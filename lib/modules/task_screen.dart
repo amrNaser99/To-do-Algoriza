@@ -30,6 +30,7 @@ class _TaskScreenState extends State<TaskScreen> {
       },
       builder: (BuildContext context, Object? state) {
         AppCubit cubit = BlocProvider.of<AppCubit>(context);
+
         return Scaffold(
           appBar: AppBar(
             titleSpacing: 0,
@@ -50,363 +51,354 @@ class _TaskScreenState extends State<TaskScreen> {
           ),
           body: Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 10.0,
-                ),
-                Text(
-                  'Title',
-                  style: GoogleFonts.actor(
-                    textStyle: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                TFF(
-                  hintText: 'Design Team Meeting',
-                  controller: cubit.titleController,
-                  keyboardType: TextInputType.text,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please Enter Task Title';
-                    }
-                  },
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                Text(
-                  'DeadLine',
-                  style: GoogleFonts.actor(
-                    textStyle: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                TFF(
-                  padding: const EdgeInsetsDirectional.only(
-                    start: 20.0,
-                    end: 10.0,
-                  ),
-                  hintText: '2020-01-01',
-                  controller: cubit.deadLineController,
-                  keyboardType: TextInputType.datetime,
-                  isIcon: true,
-                  icon: const Icon(
-                    Icons.calendar_today,
-                    color: Colors.grey,
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please Enter DeadLine';
-                    }
-                  },
-                  onTap: () {
-                    showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2020),
-                      lastDate: DateTime(2030),
-                    ).then((value) {
-                      if (value != null) {
-                        cubit.deadLineController.text =
-                            '${value.year}-${value.month}-${value.day}';
-                        debugPrint(cubit.deadLineController.text);
-                      }
-                    });
-                  },
-                ),
-                const SizedBox(
-                  height: 20.0,
-                ),
-                Row(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    Text(
+                      'Title',
+                      style: GoogleFonts.actor(
+                        textStyle: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    TFF(
+                      hintText: 'Design Team Meeting',
+                      controller: cubit.titleController,
+                      keyboardType: TextInputType.text,
+                      validator: (String? value) {
+                        if (value?.isEmpty ?? true) {
+                          return 'Please enter title';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    Text(
+                      'DeadLine',
+                      style: GoogleFonts.actor(
+                        textStyle: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    TFF(
+                      padding: const EdgeInsetsDirectional.only(
+                        start: 20.0,
+                        end: 10.0,
+                      ),
+                      hintText: '2020-01-01',
+                      controller: cubit.deadLineController,
+                      keyboardType: TextInputType.datetime,
+                      isIcon: true,
+                      icon: const Icon(
+                        Icons.calendar_today,
+                        color: Colors.grey,
+                      ),
+                      onTap: () {
+                        showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2020),
+                          lastDate: DateTime(2030),
+                        ).then((value) {
+                          if (value != null) {
+                            cubit.deadLineController.text =
+                                '${value.day} - ${value.month} - ${value.year}';
+                            debugPrint(cubit.deadLineController.text);
+                          }
+                        });
+                      },
+                      validator: (String? value) {
+                        if (value?.isEmpty ?? true) {
+                          return 'Please enter deadLine';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Start Time',
+                                style: GoogleFonts.actor(
+                                  textStyle: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10.0,
+                              ),
+                              TFF(
+                                  padding: const EdgeInsetsDirectional.only(
+                                    start: 10.0,
+                                  ),
+                                  hintText: '11:00 Am',
+                                  controller: cubit.startTimeController,
+                                  keyboardType: TextInputType.datetime,
+                                  isIcon: true,
+                                  icon: const Icon(
+                                    Icons.access_time,
+                                    color: Colors.grey,
+                                    size: 18.0,
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please Enter Start Time';
+                                    }
+                                  },
+                                  onTap: () {
+                                    showTimePicker(
+                                      context: context,
+                                      initialTime: TimeOfDay.now(),
+                                    ).then((value) {
+                                      if (value != null) {
+                                        cubit.startTimeController.text =
+                                            '${value.hour}:${value.minute} ${value.hour > 12 ? 'PM' : 'AM'}';
+                                        debugPrint(
+                                            cubit.startTimeController.text);
+                                      }
+                                    });
+                                  }),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10.0,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'End Time',
+                                style: GoogleFonts.actor(
+                                  textStyle: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10.0,
+                              ),
+                              TFF(
+                                padding: const EdgeInsetsDirectional.only(
+                                  start: 10.0,
+                                ),
+                                hintText: '04:00 Pm',
+                                controller: cubit.endTimeController,
+                                keyboardType: TextInputType.datetime,
+                                isIcon: true,
+                                icon: const Icon(Icons.access_time,
+                                    color: Colors.grey, size: 18.0),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please Enter Start Time';
+                                  }
+                                },
+                                onTap: () {
+                                  showTimePicker(
+                                    context: context,
+                                    initialTime: TimeOfDay.now(),
+                                  ).then((value) {
+                                    if (value != null) {
+                                      cubit.endTimeController.text =
+                                          '${value.hour > 12 ? value.hour - 12 : value.hour}:${value.minute} ${value.hour > 12 ? 'PM' : 'AM'}';
+                                      debugPrint(cubit.endTimeController.text);
+                                    }
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    Text(
+                      'Remind',
+                      style: GoogleFonts.actor(
+                        textStyle: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsetsDirectional.only(
+                        start: 20.0,
+                        end: 10.0,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        border: Border.all(
+                          color: Colors.transparent,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: DropdownButtonFormField<dynamic>(
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.only(
+                            top: 10.0,
+                            bottom: 10.0,
+                          ),
+                        ),
+                        value: cubit.selectedReminderValue,
+                        hint: const Text(
+                          'choose one',
+                        ),
+                        isExpanded: true,
+                        onChanged: (value) {
+                          setState(() {
+                            cubit.selectedReminderValue = value;
+                          });
+                        },
+                        onSaved: (value) {
+                          setState(() {
+                            cubit.selectedReminderValue = value;
+                          });
+                        },
+
+                        items: cubit.listOfValue,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    Text(
+                      'Color',
+                      style: GoogleFonts.actor(
+                        textStyle: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    Container(
+                      height: 50.0,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: Colors.grey[200],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text(
-                            'Start Time',
-                            style: GoogleFonts.actor(
-                              textStyle: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20.0,
+                          for (var i = 0; i < cubit.colors.length; i++)
+                            Container(
+                              height: 50.0,
+                              width: 50.0,
+                              decoration: BoxDecoration(
+                                border: cubit.isSelected &&
+                                        cubit.colorSelected == cubit.colors[i]
+                                    ? Border.all(
+                                        color: Colors.black,
+                                        width: 4.0,
+                                      )
+                                    : null,
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: cubit.colors[i],
+                              ),
+                              child: IconButton(
+                                icon: cubit.isSelected &&
+                                        cubit.colorSelected == cubit.colors[i]
+                                    ? const Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                      )
+                                    : Container(
+                                        color: cubit.colors[i],
+                                      ),
+                                onPressed: () {
+                                  cubit.setColor(cubit.colors[i]);
+                                },
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 10.0,
-                          ),
-                          TFF(
-                              padding: const EdgeInsetsDirectional.only(
-                                start: 10.0,
-                              ),
-                              hintText: '11:00 Am',
-                              controller: cubit.startTimeController,
-                              keyboardType: TextInputType.datetime,
-                              isIcon: true,
-                              icon: const Icon(
-                                Icons.access_time,
-                                color: Colors.grey,
-                                size: 18.0,
-                              ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please Enter Start Time';
-                                }
-                              },
-                              onTap: () {
-                                showTimePicker(
-                                  context: context,
-                                  initialTime: TimeOfDay.now(),
-                                ).then((value) {
-                                  if (value != null) {
-                                    cubit.startTimeController.text =
-                                        '${value.hour}:${value.minute} ${value.hour > 12 ? 'PM' : 'AM'}';
-                                    debugPrint(cubit.startTimeController.text);
-                                  }
-                                });
-                              }),
                         ],
                       ),
                     ),
                     const SizedBox(
-                      width: 10.0,
+                      height: 30.0,
                     ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'End Time',
-                            style: GoogleFonts.actor(
-                              textStyle: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20.0,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10.0,
-                          ),
-                          TFF(
-                            padding: const EdgeInsetsDirectional.only(
-                              start: 10.0,
-                            ),
-                            hintText: '04:00 Pm',
-                            controller: cubit.endTimeController,
-                            keyboardType: TextInputType.datetime,
-                            isIcon: true,
-                            icon: const Icon(Icons.access_time,
-                                color: Colors.grey, size: 18.0),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please Enter Start Time';
-                              }
-                            },
-                            onTap: () {
-                              showTimePicker(
-                                context: context,
-                                initialTime: TimeOfDay.now(),
-                              ).then((value) {
-                                if (value != null) {
-                                  cubit.endTimeController.text =
-                                      '${value.hour > 12 ? value.hour - 12 : value.hour}:${value.minute} ${value.hour > 12 ? 'PM' : 'AM'}';
-                                  debugPrint(cubit.endTimeController.text);
-                                }
-                              });
-                            },
-                          ),
-                        ],
-                      ),
+                    mainButton(
+                      context: context,
+                      text: 'Create A Task',
+                      onClick: () {
+                        if (cubit.titleController.text.isEmpty) {
+                          cubit.errorMessage = 'Please enter a title';
+                          return;
+                        } else if (cubit.startTimeController.text.isEmpty) {
+                          cubit.errorMessage = 'Please enter a start time';
+                          return;
+                        } else if (cubit.endTimeController.text.isEmpty) {
+                          cubit.errorMessage = 'Please enter an end time';
+                          return;
+                        } else if (cubit.deadLineController.text.isEmpty) {
+                          cubit.errorMessage = 'Please enter a deadline';
+                          return;
+                        }
+                        else {
+                          cubit.errorMessage = '';
+                          cubit.insertToDatabase(
+                            context: context,
+                            title: cubit.titleController.text,
+                            startTime: cubit.startTimeController.text,
+                            endTime: cubit.endTimeController.text,
+                            deadline: cubit.deadLineController.text,
+                            remind: cubit.selectedReminderValue,
+                            color: cubit.colorSelected! ,
+                            status: 'active',
+                            isFav: false,
+                          );
+                        }
+                      },
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 20.0,
-                ),
-                Text(
-                  'Remind',
-                  style: GoogleFonts.actor(
-                    textStyle: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                // DropdownButton<String>(
-                //   items:  <String>['10 min before','30 min before', '1 hour before', '1 day before'].map((String value) {
-                //     return DropdownMenuItem<String>(
-                //       value: value,
-                //       child: Text(value),
-                //     );
-                //   }).toList(),
-                //   // const [
-                //   //   DropdownMenuItem<String>(
-                //   //       value: '10 min before', child: Text('10 min before')),
-                //   //   DropdownMenuItem<String>(
-                //   //     value: '30 min before',
-                //   //     child: Text('30 min before'),
-                //   //   ),
-                //   //   DropdownMenuItem<String>(
-                //   //     value: '1 hour before',
-                //   //     child: Text('1 hour before'),
-                //   //   ),
-                //   //   DropdownMenuItem<String>(
-                //   //     value: '1 day before',
-                //   //     child: Text('1 day before'),
-                //   //   ),
-                //   // ],
-                //   onChanged: (value) {
-                //     // value == '10 min before'
-                //     //     ? cubit.remindController.text = '10'
-                //     //     : value == '30 min before'
-                //     //         ? cubit.remindController.text = '30'
-                //     //         : value == '1 hour before'
-                //     //             ? cubit.remindController.text = '60'
-                //     //             : cubit.remindController.text = '1440';
-                //     // // cubit.remindController.text = value;
-                //     setState(() {
-                //       cubit.remindController.text = value!;
-                //     });
-                //   },
-                //   value: cubit.remindController.text,
-                // ),
-                TFF(
-                  padding:
-                      const EdgeInsetsDirectional.only(start: 20.0, end: 10.0),
-                  hintText: '10 Minutes early',
-                  controller: cubit.remindController,
-                  keyboardType: TextInputType.phone,
-                  isIcon: true,
-                  icon: const Icon(
-                    Icons.arrow_drop_down_outlined,
-                    color: Colors.grey,
-                    size: 20.0,
-                  ),
-                ),
-                const SizedBox(
-                  height: 20.0,
-                ),
-
-                ///TODO: Add a color picker
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.start,
-                //   children: [
-                //     Container(
-                //       width: 50,
-                //       height: 50,
-                //       decoration: BoxDecoration(
-                //         color: Colors.red,
-                //         borderRadius: BorderRadius.circular(50),
-                //       ),
-                //       ///[TODO] if state is true then show red else show grey
-                //       child: IconButton(
-                //         icon: const Icon(
-                //           Icons.check,
-                //           color: Colors.white,
-                //         ),
-                //         onPressed: () {
-                //           // cubit.addRemind();
-                //         },
-                //       ),
-                //     ),
-                //     Container(
-                //       width: 50,
-                //       height: 50,
-                //       decoration: BoxDecoration(
-                //         color: Colors.red,
-                //         borderRadius: BorderRadius.circular(50),
-                //       ),
-                //       ///[TODO] if state is true then show red else show grey
-                //       child: IconButton(
-                //         icon: const Icon(
-                //           Icons.check,
-                //           color: Colors.white,
-                //         ),
-                //         onPressed: () {
-                //           // cubit.addRemind();
-                //         },
-                //       ),
-                //     ),
-                //     Container(
-                //       width: 50,
-                //       height: 50,
-                //       decoration: BoxDecoration(
-                //         color: Colors.red,
-                //         borderRadius: BorderRadius.circular(50),
-                //       ),
-                //       ///[TODO] if state is true then show red else show grey
-                //       child: IconButton(
-                //         icon: const Icon(
-                //           Icons.check,
-                //           color: Colors.white,
-                //         ),
-                //         onPressed: () {
-                //           // cubit.addRemind();
-                //         },
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                // const Spacer(),
-                mainButton(
-                  context: context,
-                  text: 'Create A Task',
-                  onClick: () {
-                    //   title: cubit.titleController.text,
-                    // cubit.insert(
-                    //   title: cubit.titleController.text,
-                    //   startTime: cubit.startTimeController.text,
-                    //   endTime: cubit.endTimeController.text,
-                    //   deadline: cubit.deadLineController.text,
-                    //   remind: cubit.remindController.text,
-                    //   color: 'Colors.red',
-                    //   status: 'completed',
-                    // );
-                    cubit.insertToDatabase(
-                      context: context,
-                      title: cubit.titleController.text,
-                      startTime: cubit.startTimeController.text,
-                      endTime: cubit.endTimeController.text,
-                      deadline: cubit.deadLineController.text,
-                      remind: cubit.remindController.text,
-                      color: 'Colors.red',
-                      status: 'completed',
-                      isFav: false,
-                    );
-
-                    debugPrint(
-                      "${cubit.titleController.text}, ${cubit.startTimeController.text}, ${cubit.endTimeController.text}, ${cubit.deadLineController.text}, ${cubit.remindController.text}",
-                    );
-
-                    // cubit.insertToDatabase(
-                    //   context: context,
-                    //   title: cubit.titleController.text,
-                    //   time: cubit.startTimeController.text,
-                    //   date: cubit.deadLineController.text,
-                    // );
-                  },
-                ),
-              ],
+              ),
             ),
           ),
         );

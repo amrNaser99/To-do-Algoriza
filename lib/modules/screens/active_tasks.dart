@@ -4,8 +4,8 @@ import 'package:todo_list_algoriza/shared/componands/componands.dart';
 import 'package:todo_list_algoriza/shared/cubit/app_cubit.dart';
 import 'package:todo_list_algoriza/shared/cubit/app_states.dart';
 
-class UnCompletedTasksScreen extends StatelessWidget {
-  const UnCompletedTasksScreen({Key? key}) : super(key: key);
+class ActiveTasksScreen extends StatelessWidget {
+  const ActiveTasksScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

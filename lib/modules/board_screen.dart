@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_list_algoriza/modules/screens/active_tasks.dart';
 import 'package:todo_list_algoriza/modules/screens/all_tasks.dart';
 import 'package:todo_list_algoriza/modules/screens/completed_tasks.dart';
 import 'package:todo_list_algoriza/modules/screens/favourite_tasks.dart';
-import 'package:todo_list_algoriza/modules/screens/active_tasks.dart';
 import 'package:todo_list_algoriza/modules/task_screen.dart';
 import 'package:todo_list_algoriza/shared/componands/componands.dart';
 import 'package:todo_list_algoriza/shared/cubit/app_cubit.dart';
@@ -65,8 +65,8 @@ class BoardScreen extends StatelessWidget {
                       controller: cubit.tabController,
                       children: const [
                         AllTasksScreen(),
+                        ActiveTasksScreen(),
                         CompletedTasksScreen(),
-                        UnCompletedTasksScreen(),
                         FavouriteTaskScreen(),
                       ],
                     ),

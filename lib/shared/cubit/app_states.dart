@@ -60,6 +60,16 @@ class AppUpdateDatabaseErrorState extends AppStates {
   AppUpdateDatabaseErrorState(this.error);
 }
 
+class AppSetFavLoadingState extends AppStates {}
+
+class AppSetFavSuccessfulState extends AppStates {}
+
+class AppSetFavErrorState extends AppStates {
+  final String error;
+
+  AppSetFavErrorState(this.error);
+}
+
 class AppDeleteDatabaseState extends AppStates {}
 
 class AppGetDatabaseLoadingState extends AppStates {}
@@ -71,3 +81,15 @@ class AppGetDatabaseErrorState extends AppStates {
 
   AppGetDatabaseErrorState(this.error);
 }
+
+class AppDeleteTaskLoadingState extends AppStates {}
+
+class AppDeleteTaskSuccessfulState extends AppStates {}
+
+class AppDeleteTaskErrorState extends AppStates {
+  final String error;
+
+  AppDeleteTaskErrorState(this.error);
+}
+
+class AppChangeColorStates extends AppStates {}
